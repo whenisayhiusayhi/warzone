@@ -1,0 +1,17 @@
+{
+    "money": 0,
+    "wave": 1,
+    "highestWave": 1,
+    "totalKills": 0,
+    "deaths": 0,
+    "totalCoinsEarned": 0,
+    "playtime": 0,
+    "banStatus": {
+        "isBanned": false,
+        "banEnd": 0,
+        "reason": ""
+    },
+    "settings": {
+        "username": "Jayden_111"
+    }
+}

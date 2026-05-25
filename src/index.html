@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BATTLE OF DOOM — Neon Strike Omega</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="temp_data.js"></script>
+</head>
+<body>
+
+<!-- ===================== LOADING SCREEN ===================== -->
+<div id="loading-screen">
+    <canvas id="loading-canvas"></canvas>
+    <div id="loading-content">
+        <div id="loading-logo-wrap">
+            <div id="loading-tag">TACTICAL SHOOTER</div>
+            <div id="loading-title">BATTLE OF DOOM</div>
+            <div id="loading-sub">NEON STRIKE OMEGA</div>
+        </div>
+        <div id="loading-bar-wrap">
+            <div id="loading-bar-track">
+                <div id="loading-bar-fill"></div>
+            </div>
+            <div id="loading-status">Initializing engine...</div>
+        </div>
+        <div id="loading-tip">TIP: Elite zombies (Tactical, Russian, Juggernaut) don't spawn until Wave 7.</div>
+        <div id="loading-version">v1.1.0 — STANDALONE EDITION</div>
+    </div>
+</div>
+
+<!-- ===================== GAME AREA ===================== -->
+<div id="game-wrapper">
+    <canvas id="gameCanvas"></canvas>
+    <div id="hitflash"></div>
+    <div id="concuss-overlay"></div>
+    <div id="altyn-visor-overlay" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:15; backdrop-filter: blur(14px); background: rgba(0,0,0,0.65); -webkit-mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%); mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 40%, transparent 60%, black 60%, black 100%);"></div>
+
+    <!-- Crosshair -->
+    <div id="crosshair"></div>
+    <div id="sniper-scope"></div>
+    <div id="sniper-cross"></div>
+    <div id="holo-sight"></div>
+    <div id="holo-reticle"></div>
+
+    <!-- Minimap -->
+    <canvas id="minimap"></canvas>
+
+    <!-- HUD: Bottom Left — HP / Armor / Stamina -->
+    <div id="hud-hp" class="hud-text">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span class="hud-label" style="color:#fff;">HP</span>
+            <div id="hp-bar-wrap" style="width:150px; height:6px; background:rgba(0,0,0,0.6); border-radius:2px; overflow:hidden;"><div id="hp-bar" style="width:100%; height:100%; background:linear-gradient(90deg, #16a34a, #22c55e); transition:width 0.15s;"></div></div>
+        </div>
+        <div id="hud-vest-row" style="display:none; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span class="hud-label" style="color:#5c9be6;">VEST</span>
+            <div id="vest-bar-wrap" style="width:150px; height:5px; background:rgba(0,0,0,0.6); border:1px solid #5c9be6; border-radius:2px; overflow:hidden;"><div id="vest-bar" style="width:0%; height:100%; background:#5c9be6; transition:width 0.15s;"></div></div>
+        </div>
+        <div id="hud-helmet-row" style="display:none; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span class="hud-label" style="color:#e6a85c;">HELMET</span>
+            <div id="helmet-bar-wrap" style="width:150px; height:5px; background:rgba(0,0,0,0.6); border:1px solid #e6a85c; border-radius:2px; overflow:hidden;"><div id="helmet-bar" style="width:0%; height:100%; background:#e6a85c; transition:width 0.15s;"></div></div>
+        </div>
+        
+        
+
+        <div id="stam-bar-wrap" style="width:180px;">
+            <div id="stam-label" style="font-size:9px; letter-spacing:0.1em; color:#6b7080; margin-bottom:3px;">STAMINA</div>
+            <div id="stam-bar-inner" style="width:100%; height:3px; background:linear-gradient(90deg, #c2410c, #f97316); border-radius:2px; transition:width 0.1s;"></div>
+        </div>
+    </div>
+
+    <!-- HUD: Bottom Right — Ammo -->
+    <div id="hud-ammo" class="hud-text">
+        <div id="weapon-name">AR15</div>
+        <div id="ammo-display">
+            <span id="ammo-val">20</span>
+        </div>
+    </div>
+
+    <!-- HUD: Top Right — Wave / Money -->
+    <div id="hud-wave">
+        <span id="wave-val">Wave 1</span>
+        <span id="money-val">$0</span>
+    </div>
+
+    <!-- Staff Button -->
+    <button id="staff-btn" title="Staff Login">⚙ STAFF</button>
+
+    <!-- Key hints -->
+    <div id="key-hints">
+        <span>[E] Inventory</span>
+        <span>[F] Interact</span>
+        <span>[H] Unlock Mouse</span>
+        <span>[R] Reload</span>
+        <span>[G] Hold: Grenade</span>
+    </div>
+
+    <!-- Killstreak Counter -->
+    <div id="hud-killstreak" style="display:none; position:absolute; top:16px; right:200px; font-family:'JetBrains Mono',monospace; font-size:12px; color:#ff4444; pointer-events:none; z-index:20; text-align:right;">
+        <div id="killstreak-val" style="font-size:22px; font-weight:800; color:#ff4444; line-height:1; text-shadow: 0 0 10px rgba(255,50,50,0.8);">0</div>
+        <div style="font-size:8px; letter-spacing:0.15em; color:#cc3333;">KILL STREAK</div>
+    </div>
+
+    <!-- Wave Countdown -->
+    <div id="hud-wave-countdown" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-family:'JetBrains Mono',monospace; pointer-events:none; z-index:25; text-align:center;">
+        <div id="wave-countdown-label" style="font-size:11px; letter-spacing:0.3em; color:#aaa; text-transform:uppercase; margin-bottom:4px;">NEXT WAVE</div>
+        <div id="wave-countdown-val" style="font-size:52px; font-weight:900; color:#ff4444; line-height:1; text-shadow: 0 0 24px rgba(255,50,50,0.6);">3</div>
+    </div>
+
+    <!-- Kill Feed -->
+    <div id="hud-killfeed" style="position:absolute; top:16px; right:16px; width:250px; display:flex; flex-direction:column; gap:4px; pointer-events:none; z-index:25; align-items:flex-end;"></div>
+
+    <!-- Scoreboard (Tab) -->
+    <div id="scoreboard-overlay" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(12,12,22,0.95); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:24px; min-width:400px; z-index:100; box-shadow:0 20px 60px rgba(0,0,0,0.8);">
+        <div style="font-family:'Share Tech Mono',monospace; font-size:14px; letter-spacing:0.2em; color:#fff; text-transform:uppercase; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px; display:flex; justify-content:space-between;">
+            <span>PLAYER</span>
+            <div style="display:flex; gap:32px;"><span>KILLS</span><span>DEATHS</span></div>
+        </div>
+        <div id="scoreboard-list" style="display:flex; flex-direction:column; gap:8px;">
+            <!-- Player rows inserted here -->
+        </div>
+    </div>
+
+
+    <!-- Notice / Message -->
+    <div id="notice"></div>
+
+    <!-- Debug Overlay -->
+    <div id="debug-overlay">
+        <div class="dbg-row"><span class="dbg-lbl">FPS</span><span id="dbg-fps">--</span></div>
+        <div class="dbg-row"><span class="dbg-lbl">X</span><span id="dbg-x">--</span></div>
+        <div class="dbg-row"><span class="dbg-lbl">Y</span><span id="dbg-y">--</span></div>
+        <div class="dbg-row"><span class="dbg-lbl">Z</span><span id="dbg-z">--</span></div>
+        <div class="dbg-row"><span class="dbg-lbl">Angle</span><span id="dbg-ang">--</span></div>
+        <div class="dbg-row"><span class="dbg-lbl">Bullets</span><span id="dbg-bul">--</span></div>
+        <div class="dbg-row"><span class="dbg-lbl">Entities</span><span id="dbg-ent">--</span></div>
+        <div class="dbg-row"><span class="dbg-lbl">Wave</span><span id="dbg-wv">--</span></div>
+        <div class="dbg-row"><span class="dbg-lbl">$Money</span><span id="dbg-mon">--</span></div>
+    </div>
+
+    <!-- Spectate HUD -->
+    <div id="spectate-hud">
+        <span>📷 SPECTATING</span>
+        <span id="spectate-target-name">Zombie #1</span>
+        <button id="spec-next-btn">NEXT →</button>
+    </div>
+</div>
+
+
+<!-- ===================== SHOP OVERLAY (H) ===================== -->
+<div id="shop-overlay">
+    <div class="overlay-header">
+        <h2>🔫 ARMORY</h2>
+        <span>Balance: <strong id="shop-money">$0</strong></span>
+    </div>
+    <div id="shop-list"></div>
+    <p class="overlay-hint">[ H ] Close Armory</p>
+</div>
+
+
+<!-- ===================== MAIN MENU ===================== -->
+<div id="menu-overlay">
+    <canvas id="menu-bg-canvas"></canvas>
+
+    <!-- Left Sidebar -->
+    <div id="menu-sidebar">
+        <div id="menu-logo-block" style="text-align: center;">
+            <div id="menu-logo-tag">⚔ TACTICAL SHOOTER</div>
+            <div id="menu-logo-title">BATTLE<br>OF DOOM</div>
+            <div id="menu-logo-sub">NEON STRIKE OMEGA</div>
+        </div>
+
+        <nav id="menu-nav">
+            <button class="menu-nav-btn active" data-screen="mode-choice-screen" id="nav-play">▶ &nbsp;PLAY</button>
+            <button class="menu-nav-btn" data-screen="menu-settings-screen" id="nav-settings">⚙ &nbsp;SETTINGS</button>
+            <button class="menu-nav-btn" data-screen="menu-controls-screen" id="nav-controls">🎮 &nbsp;CONTROLS</button>
+        </nav>
+
+        <div id="menu-sidebar-footer">
+            <div id="menu-player-tag">👤 Jayden_111</div>
+            <div id="menu-version-tag">v1.10 — Standalone</div>
+            <div id="menu-updater-status" style="font-size:10px; color:#ffea00; margin-top:8px; max-width:250px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+        </div>
+    </div>
+
+    <!-- Right Content Panel -->
+    <div id="menu-content">
+
+        <!-- PLAY / MODE SELECTION -->
+        <div id="mode-choice-screen" class="menu-screen active">
+            <div class="menu-screen-title">SELECT MODE</div>
+            <div class="menu-screen-sub">Choose your deployment. Each mode is a different fight.</div>
+            <div class="menu-mode-grid">
+                <div class="menu-mode-card" id="mode-survival">
+                    <div class="menu-mode-icon">🧟</div>
+                    <div class="menu-mode-body">
+                        <div class="menu-mode-name">TACTICAL SURVIVAL</div>
+                        <div class="menu-mode-desc">Infinite waves of zombies. Procedural killhouse map. Build your loadout and survive as long as possible.</div>
+                        <div class="menu-mode-tags"><span class="menu-tag">SOLO</span><span class="menu-tag">PvE</span><span class="menu-tag">WAVE-BASED</span></div>
+                    </div>
+                    <button class="menu-mode-btn" id="btn-deploy-solo">DEPLOY →</button>
+                </div>
+                <div class="menu-mode-card" id="mode-pvp">
+                    <div class="menu-mode-icon">🎯</div>
+                    <div class="menu-mode-body">
+                        <div class="menu-mode-name">PVP ARENA</div>
+                        <div class="menu-mode-desc">High-speed multiplayer combat. No AI. Pure skill-based tactical arena warfare against real players.</div>
+                        <div class="menu-mode-tags"><span class="menu-tag">MULTIPLAYER</span><span class="menu-tag">PvP</span><span class="menu-tag menu-tag-beta">BETA</span></div>
+                    </div>
+                    <button class="menu-mode-btn" id="btn-enter-lobby">LOBBY →</button>
+                </div>
+            </div>
+
+            <!-- PvP Lobby (inline) -->
+            <div id="pvp-lobby-screen" style="display:none;">
+                <div class="menu-screen-title" style="font-size:14px; margin-top:24px;">PVP CONNECTION HUB</div>
+                <div class="lobby-actions">
+                    <div class="lobby-action-box">
+                        <h4>HOST A MATCH</h4>
+                        <p>Your room code will appear here.</p>
+                        <button id="lobby-create-btn" class="menu-mode-btn" style="width:100%;">CREATE WORLD</button>
+                        <div id="lobby-join-code-disp" style="margin-top:12px; font-family:var(--font-mono); font-size:10px; color:#60a5fa; text-align:center; letter-spacing:2px; min-height:28px;">—</div>
+                        <div style="font-size:9px; color:#555; text-align:center; margin-top:4px;">Share this code with friends to join</div>
+                    </div>
+                    <div class="lobby-action-box">
+                        <h4>JOIN A MATCH</h4>
+                        <p>Enter the host's 6-character room code.</p>
+                        <input type="text" id="lobby-join-input" placeholder="ROOM CODE" maxlength="8" style="background:#111;color:#fff;border:1px solid #444;padding:8px;margin-bottom:10px;text-align:center;font-family:var(--font-mono);text-transform:uppercase;width:100%;border-radius:4px;letter-spacing:4px;font-size:16px;">
+                        <button id="lobby-join-btn" class="menu-mode-btn" style="width:100%;">CONNECT</button>
+                        <div style="font-size:9px; color:#555; text-align:center; margin-top:8px;">⚠ Requires internet connection (PeerJS)</div>
+                    </div>
+                </div>
+                <button id="lobby-back-btn" style="background:transparent;color:#555;border:none;margin-top:16px;cursor:pointer;font-family:var(--font-mono);font-size:11px;">← BACK TO MODES</button>
+            </div>
+        </div>
+
+        <!-- SETTINGS SCREEN -->
+        <div id="menu-settings-screen" class="menu-screen">
+            <div class="menu-screen-title">SETTINGS</div>
+            <div class="menu-screen-sub">Graphics and performance options.</div>
+            <div class="menu-settings-list">
+                <div class="menu-setting-row">
+                    <div class="menu-setting-label">Render Distance</div>
+                    <div class="menu-setting-control">
+                        <input type="range" id="render-dist-slider-menu" min="20" max="100" value="80" class="menu-slider">
+                        <span id="render-dist-lbl-menu" class="menu-slider-val">80</span>
+                    </div>
+                </div>
+                <div class="menu-setting-row">
+                    <div class="menu-setting-label">Mouse Sensitivity</div>
+                    <div class="menu-setting-control">
+                        <input type="range" id="mouse-sens-slider-menu" min="1" max="50" value="10" class="menu-slider">
+                        <span id="mouse-sens-lbl-menu" class="menu-slider-val">1.0x</span>
+                    </div>
+                </div>
+                <div class="menu-setting-row">
+                    <div class="menu-setting-label">Graphics Quality</div>
+                    <div class="menu-setting-control">
+                        <input type="range" id="graphics-quality-slider-menu" min="1" max="4" value="2" class="menu-slider">
+                        <span id="graphics-quality-lbl-menu" class="menu-slider-val">Medium</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTROLS SCREEN -->
+        <div id="menu-controls-screen" class="menu-screen">
+            <div class="menu-screen-title">CONTROLS</div>
+            <div class="menu-screen-sub">Default key bindings.</div>
+            <div class="menu-controls-grid">
+                <div class="menu-ctrl-row"><kbd>W A S D</kbd><span>Move</span></div>
+                <div class="menu-ctrl-row"><kbd>Shift</kbd><span>Sprint</span></div>
+                <div class="menu-ctrl-row"><kbd>LMB</kbd><span>Fire</span></div>
+                <div class="menu-ctrl-row"><kbd>RMB</kbd><span>Aim Down Sights</span></div>
+                <div class="menu-ctrl-row"><kbd>Space</kbd><span>Jump</span></div>
+                <div class="menu-ctrl-row"><kbd>R</kbd><span>Reload</span></div>
+                <div class="menu-ctrl-row"><kbd>E</kbd><span>Open Inventory</span></div>
+                <div class="menu-ctrl-row"><kbd>F</kbd><span>Interact / Shop</span></div>
+                <div class="menu-ctrl-row"><kbd>G</kbd><span>Hold to Charge Grenade</span></div>
+                <div class="menu-ctrl-row"><kbd>H</kbd><span>Unlock Mouse</span></div>
+                <div class="menu-ctrl-row"><kbd>Esc</kbd><span>Pause Menu</span></div>
+                <div class="menu-ctrl-row"><kbd>1 – 5</kbd><span>Switch Weapon Slot</span></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+ 
+<!-- ===================== DEATH SCREEN ===================== -->
+<div id="death-overlay">
+    <div class="death-title">YOU DIED</div>
+    <div class="death-sub">Your mission has ended.</div>
+    <button id="respawn-btn">RESPAWN</button>
+</div>
+
+
+<!-- ===================== STAFF LOGIN MODAL ===================== -->
+<div id="staff-modal-bg">
+    <div id="staff-modal">
+        <div id="staff-modal-header">
+            <div class="staff-logo">🔐</div>
+            <h3>Staff Authentication</h3>
+            <p>Restricted to authorized personnel only.</p>
+        </div>
+        <div class="form-group">
+            <label for="staff-user">Username</label>
+            <input type="text" id="staff-user" placeholder="Enter username" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="form-group">
+            <label for="staff-pass">Password</label>
+            <input type="password" id="staff-pass" placeholder="Enter password" autocomplete="off">
+        </div>
+        <div id="staff-error"></div>
+        <div class="staff-btn-row">
+            <button id="staff-login-btn">LOGIN</button>
+            <button id="staff-cancel-btn" class="btn-secondary">CANCEL</button>
+        </div>
+
+        <!-- Moderation Tab (Visible after login) -->
+        <div id="staff-mod-section" style="display:none; margin-top:20px; border-top:1px solid #333; padding-top:15px;">
+            <h4 style="color:#ff3030; font-size:12px; margin-bottom:10px;">🛡️ MODERATION TOOLS</h4>
+            <div class="cheat-row">
+                <span>Current Status:</span>
+                <span id="mod-status-text" style="color:#22c55e;">CLEAR</span>
+            </div>
+            <div class="staff-btn-row" style="margin-top:10px;">
+                <button id="mod-unban-btn" style="background:#22c55e; flex:1;">UNBAN ME</button>
+                <button id="mod-ban-btn" style="background:#ff3030; flex:1;">TEST BAN (1H)</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== ROBLOX-STYLE BAN OVERLAY ===================== -->
+<div id="ban-overlay" style="display:none;">
+    <div id="ban-box">
+        <div id="ban-header">Disconnected</div>
+        <div id="ban-body">
+            <p>You have been banned from this experience.</p>
+            <p id="ban-reason" style="margin:15px 0; color:#ff3030; font-weight:bold;">Reason: Script Injection Detected</p>
+            <p>Your ban will expire in: <span id="ban-timer-val">59m 59s</span></p>
+        </div>
+        <div id="ban-footer">
+            <button id="ban-close-btn" onclick="window.close()">Leave</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ===================== ADMIN PANEL ===================== -->
+<div id="admin-panel" class="cheat-menu" style="display:none;">
+    <div id="admin-header" class="cheat-header">
+        <span class="cheat-title">ADMIN PANNEL <span class="cheat-title-sub">| TESTING</span></span>
+        <button id="admin-close-btn" class="cheat-close">✕</button>
+    </div>
+    <div class="cheat-tabs">
+        <button class="cheat-tab active" data-tab="tab-visuals">Visuals</button>
+        <button class="cheat-tab" data-tab="tab-combat">Combat</button>
+        <button class="cheat-tab" data-tab="tab-movement">Movement</button>
+        <button class="cheat-tab" data-tab="tab-misc">Misc</button>
+        <button class="cheat-tab" data-tab="tab-admin">Admin</button>
+    </div>
+    
+    <div class="cheat-content">
+
+
+        <!-- COMBAT TAB -->
+        <div id="tab-combat" class="cheat-tab-content" style="flex-direction: column; gap: 0;">
+            <div class="cheat-subtabs" style="display: flex; gap: 8px; margin-bottom: 12px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                <button class="cheat-subtab active" data-subtab="subtab-aimbot">Aimbot</button>
+                <button class="cheat-subtab" data-subtab="subtab-silent">Silent Aim</button>
+            </div>
+            
+            <!-- Aimbot Sub-Tab Content -->
+            <div id="subtab-aimbot" class="cheat-subtab-content" style="display: flex; gap: 15px; width: 100%;">
+                <div class="cheat-col">
+                    <div class="cheat-section">Aim Module</div>
+                    <div class="cheat-row" id="adm-aimbot">
+                        <div class="cheat-checkbox"></div><span>Hard Aimbot</span>
+                        <button class="cheat-bind" data-bind="aimbot">[ - ]</button>
+                    </div>
+                    <div class="cheat-row" id="adm-recoil">
+                        <div class="cheat-checkbox"></div><span>No Recoil</span>
+                        <button class="cheat-bind" data-bind="recoil">[ - ]</button>
+                    </div>
+                    <div class="cheat-row" id="adm-no-spread">
+                        <div class="cheat-checkbox"></div><span>No Spread</span>
+                        <button class="cheat-bind" data-bind="no-spread">[ - ]</button>
+                    </div>
+                    <div class="cheat-row" id="adm-triggerbot">
+                        <div class="cheat-checkbox"></div><span>Triggerbot (Auto-Fire)</span>
+                        <button class="cheat-bind" data-bind="triggerbot">[ - ]</button>
+                    </div>
+                    <div class="cheat-row" id="adm-radial">
+                        <div class="cheat-checkbox"></div><span>Aimbot FOV Radial</span>
+                        <button class="cheat-bind" data-bind="radial">[ - ]</button>
+                    </div>
+                </div>
+                <div class="cheat-col">
+                    <div class="cheat-section">Aim Settings</div>
+                    <div class="cheat-slider-wrap">
+                        <div class="cheat-slider-labels"><span>Aimbot FOV</span><span id="adm-fov-lbl">150px</span></div>
+                        <input type="range" id="adm-fov-val" min="50" max="600" value="150">
+                    </div>
+                    <div class="cheat-slider-wrap">
+                        <div class="cheat-slider-labels"><span>Aim Smoothness</span><span id="adm-smooth-lbl">1 (Instant)</span></div>
+                        <input type="range" id="adm-smooth-val" min="1" max="30" value="1">
+                    </div>
+                    <div class="cheat-row">
+                        <span>Hit Location</span>
+                        <select id="adm-hit-location" class="cheat-dropdown">
+                            <option value="head">Head</option>
+                            <option value="body">Body</option>
+                            <option value="legs">Legs</option>
+                        </select>
+                    </div>
+                    <div class="cheat-row">
+                        <span>Target Priority</span>
+                        <select id="adm-target-priority" class="cheat-dropdown">
+                            <option value="closest">Closest Distance</option>
+                            <option value="lowest-health">Lowest Health</option>
+                            <option value="crosshair">Nearest Crosshair</option>
+                        </select>
+                    </div>
+                    <div class="cheat-row">
+                        <span>Aimbot Keybind</span>
+                        <select id="adm-aim-key" class="cheat-dropdown">
+                            <option value="mouse2">Mouse2 (Right Click)</option>
+                            <option value="mouse1">Mouse1 (Left Click)</option>
+                            <option value="shift">Shift Key</option>
+                            <option value="always">Always On</option>
+                        </select>
+                    </div>
+                    <div class="cheat-row" style="margin-top: 8px;">
+                        <span>FOV Color</span>
+                        <input type="color" id="adm-fov-color" value="#ff0044" style="border:none; background:none; cursor:pointer; width:30px; height:20px; padding:0;">
+                    </div>
+                </div>
+                <div class="cheat-col">
+                    <div class="cheat-section">Weapon Modifiers</div>
+                    <div class="cheat-slider-wrap">
+                        <div class="cheat-slider-labels"><span>Reload Speed</span><span id="adm-reload-speed-lbl">1.0x</span></div>
+                        <input type="range" id="adm-reload-speed-val" min="1" max="10" value="1" step="0.5">
+                    </div>
+                    <div class="cheat-row" style="font-size:10px; color:#666; margin-top:4px;">
+                        <span>1x = normal · 10x = instant</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Silent Aim Sub-Tab Content -->
+            <div id="subtab-silent" class="cheat-subtab-content" style="display: none; gap: 15px; width: 100%;">
+                <div class="cheat-col">
+                    <div class="cheat-section">Silent Aim Module</div>
+                    <div class="cheat-row" id="adm-silent">
+                        <div class="cheat-checkbox"></div><span>Silent Aim</span>
+                        <button class="cheat-bind" data-bind="silent">[ - ]</button>
+                    </div>
+                    <div class="cheat-row" id="adm-radial-silent">
+                        <div class="cheat-checkbox"></div><span>Silent FOV Radial</span>
+                        <button class="cheat-bind" data-bind="radial-silent">[ - ]</button>
+                    </div>
+                </div>
+                <div class="cheat-col">
+                    <div class="cheat-section">Silent Settings</div>
+                    <div class="cheat-slider-wrap">
+                        <div class="cheat-slider-labels"><span>Accuracy</span><span id="adm-accuracy-lbl">100%</span></div>
+                        <input type="range" id="adm-accuracy-val" min="0" max="100" value="100">
+                    </div>
+                    <div class="cheat-slider-wrap">
+                        <div class="cheat-slider-labels"><span>Silent Aim FOV</span><span id="adm-silent-fov-lbl">200px</span></div>
+                        <input type="range" id="adm-silent-fov-val" min="50" max="600" value="200">
+                    </div>
+                    <div class="cheat-row">
+                        <span>Silent Aim Method</span>
+                        <select id="adm-silent-mode" class="cheat-dropdown">
+                            <option value="vector">Auto-Aim Gun</option>
+                            <option value="teleport">Homing Bullet</option>
+                        </select>
+                    </div>
+                    <div class="cheat-row">
+                        <span>Silent Keybind</span>
+                        <select id="adm-silent-key" class="cheat-dropdown">
+                            <option value="always">Always On</option>
+                            <option value="mouse1">Mouse1 (Left Click)</option>
+                            <option value="mouse2">Mouse2 (Right Click)</option>
+                            <option value="shift">Shift Key</option>
+                        </select>
+                    </div>
+                    <div class="cheat-row" style="margin-top: 8px;">
+                        <span>Silent FOV Color</span>
+                        <input type="color" id="adm-silent-fov-color" value="#ffaa00" style="border:none; background:none; cursor:pointer; width:30px; height:20px; padding:0;">
+                    </div>
+                </div>
+                <div class="cheat-col">
+                    <div class="cheat-section">Weapon Modifiers</div>
+                    <div class="cheat-slider-wrap">
+                        <div class="cheat-slider-labels"><span>Reload Speed</span><span id="adm-reload-speed-lbl-silent">1.0x</span></div>
+                        <input type="range" id="adm-reload-speed-val-silent" min="1" max="10" value="1" step="0.5">
+                    </div>
+                    <div class="cheat-row" style="font-size:10px; color:#666; margin-top:4px;">
+                        <span>1x = normal · 10x = instant</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISUALS TAB -->
+        <div id="tab-visuals" class="cheat-tab-content active">
+            <div class="cheat-col">
+                <div class="cheat-section">ESP Overlays</div>
+                <div class="cheat-row" id="adm-esp">
+                    <div class="cheat-checkbox"></div><span>Enemy Box ESP</span>
+                    <button class="cheat-bind" data-bind="esp">[ - ]</button>
+                </div>
+                <div class="cheat-row" id="adm-skeleton-esp">
+                    <div class="cheat-checkbox"></div><span>Skeleton ESP</span>
+                    <button class="cheat-bind" data-bind="skeleton-esp">[ - ]</button>
+                </div>
+                <div class="cheat-row" id="adm-tracers">
+                    <div class="cheat-checkbox"></div><span>Zombie Tracers</span>
+                    <button class="cheat-bind" data-bind="tracers">[ - ]</button>
+                </div>
+                <div class="cheat-row" id="adm-hitboxes">
+                    <div class="cheat-checkbox"></div><span>Hitbox Zones</span>
+                    <button class="cheat-bind" data-bind="hitboxes">[ - ]</button>
+                </div>
+                <div class="cheat-row" id="adm-distance-esp">
+                    <div class="cheat-checkbox"></div><span>Distance ESP</span>
+                    <button class="cheat-bind" data-bind="distance-esp">[ - ]</button>
+                </div>
+                <div class="cheat-row" id="adm-name-esp">
+                    <div class="cheat-checkbox"></div><span>Name/HP ESP</span>
+                    <button class="cheat-bind" data-bind="name-esp">[ - ]</button>
+                </div>
+                <div class="cheat-row" id="adm-rainbow-rgb">
+                    <div class="cheat-checkbox"></div><span>Rainbow RGB Mode</span>
+                    <button class="cheat-bind" data-bind="rainbow-rgb">[ - ]</button>
+                </div>
+            </div>
+            <div class="cheat-col">
+                <div class="cheat-section">HUD Visuals</div>
+                <div class="cheat-row" id="adm-loot-esp">
+                    <div class="cheat-checkbox"></div><span>Loot ESP</span>
+                    <button class="cheat-bind" data-bind="loot-esp">[ - ]</button>
+                </div>
+
+                <div class="cheat-row" id="adm-healthbars">
+                    <div class="cheat-checkbox"></div><span>Open Health Bars</span>
+                    <button class="cheat-bind" data-bind="healthbars">[ - ]</button>
+                </div>
+            </div>
+            <div class="cheat-col">
+                <div class="cheat-section">Visual Settings</div>
+                <div class="cheat-row">
+                    <span>ESP Mode</span>
+                    <select id="adm-esp-mode" class="cheat-dropdown">
+                        <option value="box">Box</option>
+                        <option value="glow">Glow</option>
+                    </select>
+                </div>
+                <div class="cheat-row">
+                    <span>Tracer Target</span>
+                    <select id="adm-tracer-mode" class="cheat-dropdown">
+                        <option value="all">All</option>
+                        <option value="closest">Closest Only</option>
+                        <option value="target">Aimbot Target</option>
+                    </select>
+                </div>
+                <div class="cheat-row">
+                    <span>Tracer Location</span>
+                    <select id="adm-tracer-location" class="cheat-dropdown">
+                        <option value="legs">Legs (Feet)</option>
+                        <option value="body">Body (Torso)</option>
+                        <option value="head">Head</option>
+                        <option value="aimbot">Match Aimbot</option>
+                    </select>
+                </div>
+                <div class="cheat-slider-wrap">
+                    <div class="cheat-slider-labels"><span>Hitbox Expansion</span><span id="adm-hitbox-expansion-lbl">1.0x</span></div>
+                    <input type="range" id="adm-hitbox-expansion-val" min="10" max="30" value="10" step="2">
+                </div>
+                <div class="cheat-slider-wrap">
+                    <div class="cheat-slider-labels"><span>FOV Increaser</span><span id="adm-fov-increaser-lbl">1.0x (Standard)</span></div>
+                    <input type="range" id="adm-fov-increaser-val" min="10" max="25" value="10" step="1">
+                </div>
+                <div class="cheat-row" style="margin-top: 8px;">
+                    <span>ESP Color</span>
+                    <input type="color" id="adm-esp-color" value="#ff0044" style="border:none; background:none; cursor:pointer; width:30px; height:20px; padding:0;">
+                </div>
+                <div class="cheat-row">
+                    <span>Tracer Color</span>
+                    <input type="color" id="adm-tracer-color" value="#00ffcc" style="border:none; background:none; cursor:pointer; width:30px; height:20px; padding:0;">
+                </div>
+            </div>
+        </div>
+
+        <!-- MOVEMENT TAB -->
+        <div id="tab-movement" class="cheat-tab-content">
+            <div class="cheat-col">
+                <div class="cheat-section">Player Modifiers</div>
+                <div class="cheat-row" id="adm-speed">
+                    <div class="cheat-checkbox"></div><span style="color:#ff3030;">Speedhack</span>
+                    <button class="cheat-bind" data-bind="speed">[ - ]</button>
+                </div>
+                <div class="cheat-slider-wrap">
+                    <div class="cheat-slider-labels"><span>Velocity</span><span id="adm-speed-lbl">2.4x</span></div>
+                    <input type="range" id="adm-speed-val" min="1" max="50" value="2" step="0.1">
+                </div>
+                <div class="cheat-row" id="adm-noclip">
+                    <div class="cheat-checkbox"></div><span style="color:#ff3030;">Freecam (Noclip)</span>
+                    <button class="cheat-bind" data-bind="noclip">[ - ]</button>
+                </div>
+                <div class="cheat-row" id="adm-flyhack">
+                    <div class="cheat-checkbox"></div><span style="color:#ff3030;">Flyhack</span>
+                    <button class="cheat-bind" data-bind="flyhack">[ - ]</button>
+                </div>
+            </div>
+            <div class="cheat-col">
+                <div class="cheat-section">Jumping & Stamina</div>
+                <div class="cheat-row" id="adm-bhop">
+                    <div class="cheat-checkbox"></div><span>Auto Bunnyhop</span>
+                    <button class="cheat-bind" data-bind="bhop">[ - ]</button>
+                </div>
+                <div class="cheat-row" id="adm-infinite-stamina">
+                    <div class="cheat-checkbox"></div><span>Infinite Stamina</span>
+                    <button class="cheat-bind" data-bind="infinite-stamina">[ - ]</button>
+                </div>
+                <div class="cheat-slider-wrap">
+                    <div class="cheat-slider-labels"><span>Jump Power</span><span id="adm-jump-lbl">4.8</span></div>
+                    <input type="range" id="adm-jump-val" min="1" max="20" value="4.8" step="0.2">
+                </div>
+            </div>
+            <div class="cheat-col">
+            </div>
+        </div>
+
+        <!-- MISC TAB -->
+        <div id="tab-misc" class="cheat-tab-content">
+            <div class="cheat-col">
+                <div class="cheat-section">View Modes</div>
+                <div class="cheat-row" id="adm-thirdperson">
+                    <div class="cheat-checkbox"></div><span>Third Person</span>
+                    <button class="cheat-bind" data-bind="thirdperson">[ - ]</button>
+                </div>
+                <div class="cheat-row" id="adm-spectate">
+                    <div class="cheat-checkbox"></div><span>Spectate Mode</span>
+                    <button class="cheat-bind" data-bind="spectate">[ - ]</button>
+                </div>
+                
+                <div class="cheat-section" style="margin-top: 15px;">Environment</div>
+                <div class="cheat-row" id="adm-customSky">
+                    <div class="cheat-checkbox"></div><span>Custom Sky</span>
+                    <button class="cheat-bind" data-bind="customSky">[ - ]</button>
+                </div>
+                <div class="cheat-row">
+                    <span>Sky Color</span>
+                    <input type="color" id="adm-sky-color" value="#ff3030">
+                </div>
+                <div class="cheat-slider-wrap">
+                    <div class="cheat-slider-labels"><span>Brightness</span><span id="adm-sky-brightness-lbl">1.0</span></div>
+                    <input type="range" id="adm-sky-brightness" min="0.1" max="3" value="1.0" step="0.1">
+                </div>
+            </div>
+            <div class="cheat-col">
+                <div class="cheat-section">Weapon Chams</div>
+                <div class="cheat-row" id="adm-chams">
+                    <div class="cheat-checkbox"></div><span>Enable Chams</span>
+                    <button class="cheat-bind" data-bind="chams">[ - ]</button>
+                </div>
+                <div class="cheat-row">
+                    <span>Cham Color</span>
+                    <input type="color" id="adm-chams-color" value="#ff0000">
+                </div>
+                <div class="cheat-slider-wrap">
+                    <div class="cheat-slider-labels"><span>Transparency</span><span id="adm-chams-alpha-lbl">0.8</span></div>
+                    <input type="range" id="adm-chams-alpha" min="0" max="1" value="0.8" step="0.05">
+                </div>
+                
+                <div class="cheat-section" style="margin-top: 15px;">Overlays</div>
+                <div class="cheat-row" id="adm-debug">
+                    <div class="cheat-checkbox"></div><span>Debug Overlay</span>
+                    <button class="cheat-bind" data-bind="debug">[ - ]</button>
+                </div>
+            </div>
+            <div class="cheat-col">
+                <div class="cheat-section">Combat Modifiers</div>
+                <div class="cheat-row" id="adm-anti-aim">
+                    <div class="cheat-checkbox"></div><span>Anti Aim</span>
+                    <button class="cheat-bind" data-bind="anti-aim">[ - ]</button>
+                </div>
+                <div class="cheat-row" id="adm-spinbot">
+                    <div class="cheat-checkbox"></div><span>Spinbot</span>
+                    <button class="cheat-bind" data-bind="spinbot">[ - ]</button>
+                </div>
+                <div class="cheat-row" id="adm-infinite-ammo">
+                    <div class="cheat-checkbox"></div><span>Infinite Ammo (Reserve)</span>
+                    <button class="cheat-bind" data-bind="infinite-ammo">[ - ]</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN TAB -->
+        <div id="tab-admin" class="cheat-tab-content">
+            <div class="cheat-col">
+                <div class="cheat-section">Item Spawner</div>
+                <div class="cheat-row" style="flex-direction:column; align-items:stretch; gap:8px;">
+                    <select id="adm-spawn-item" class="cheat-dropdown">
+                        <optgroup label="Weapons" id="adm-spawn-weapons-list"></optgroup>
+                        <optgroup label="Tactical Gear">
+                            <option value="item-bandage">Bandage</option>
+                            <option value="item-medkit">Medkit</option>
+                            <option value="item-large-medkit">Large Medkit</option>
+                            <option value="item-repair-vest">Vest Repair Kit</option>
+                            <option value="item-repair-helmet">Helmet Repair Kit</option>
+                            <option value="item-grenade">M67 Grenade</option>
+                            <option value="item-armor-light">Light Armor</option>
+                            <option value="item-armor-heavy">Heavy Armor</option>
+                            <option value="item-armor-jugg">Juggernaut</option>
+                            <option value="item-helmet-1">Motorcycle Helmet (T1)</option>
+                            <option value="item-helmet-2">Police Helmet (T2)</option>
+                            <option value="item-helmet-3">Military Helmet (T3)</option>
+                            <option value="item-helmet-4">Altyn Helmet (T4)</option>
+                            <option value="item-backpack-traveler">Traveler's Backpack (+8 Slots)</option>
+                            <option value="item-backpack-military">Military Backpack (+15 Slots)</option>
+                            <option value="item-backpack-duffle">Duffle Bag (+30 Slots)</option>
+                            <option value="item-floppy-red">Red Floppy Disk</option>
+                            <option value="item-floppy-black">Black Floppy Disk</option>
+                        </optgroup>
+                        <optgroup label="Ammunition">
+                            <option value="ammo-9mm">9mm (100)</option>
+                            <option value="ammo-44mag">.44 Mag (75)</option>
+                            <option value="ammo-223rem">.223 Rem (50)</option>
+                            <option value="ammo-308win">.308 Win (20)</option>
+                            <option value="ammo-12g">12 Gauge (25)</option>
+                            <option value="ammo-9x39">9x39mm (60)</option>
+                            <option value="ammo-762">7.62x62 (50)</option>
+                            <option value="ammo-50bmg">.50 BMG (10)</option>
+                            <option value="ammo-762x54">7.62x54 MMR (50)</option>
+                        </optgroup>
+                    </select>
+                    <button id="adm-spawn-item-btn" class="cheat-btn">SPAWN ITEM</button>
+                </div>
+                <div class="cheat-section" style="margin-top:16px;">Economy</div>
+                <button class="cheat-btn" id="adm-add-money">SPAWN $50,000</button>
+                <div class="cheat-section" style="margin-top:16px;">Simulate Damage</div>
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                    <button class="cheat-btn" id="adm-dmg-body" style="background:#444; color:#fff;">BODY SHOT (15)</button>
+                    <button class="cheat-btn" id="adm-dmg-head" style="background:#c00; color:#fff; font-weight:700;">HEAD SHOT (30 × 2.0)</button>
+                    <button class="cheat-btn" id="adm-dmg-zombie" style="background:#3a5a2a; color:#aeffae;">ZOMBIE BITE (10)</button>
+                </div>
+            </div>
+            <div class="cheat-col">
+                <div class="cheat-section">Zombie Spawner</div>
+                <div class="cheat-row" style="flex-direction:column; align-items:stretch; gap:8px;">
+                    <select id="adm-spawn-type" class="cheat-dropdown">
+                        <option value="z">Basic Zombie</option>
+                        <option value="sz">Soldier Zombie</option>
+                        <option value="tz">Tactical Zombie</option>
+                        <option value="rz">Russian Zombie</option>
+                        <option value="jz">Juggernaut</option>
+                        <option value="bz">Bomber Zombie</option>
+                    </select>
+                    <label class="cheat-row" style="justify-content:flex-start; gap:8px; cursor:pointer;">
+                        <input type="checkbox" id="adm-spawn-frozen" style="accent-color:#ff3030;">
+                        <span>Frozen (no movement)</span>
+                    </label>
+                    <button class="cheat-btn" id="adm-spawn-zombie">SPAWN ZOMBIE</button>
+                    <button class="cheat-btn" id="adm-respawn-crow" style="background:#5c9be6; color:#111; font-weight:700; margin-top:8px;">RESPAWN CROW MERCHANT</button>
+                </div>
+            </div>
+            <div class="cheat-col">
+                <div class="cheat-section">Moderation (PvP)</div>
+                <div class="cheat-row" id="adm-mod-kick"><span>Kick Selected</span><button class="cheat-btn-sm" style="background:#c00;">EXEC</button></div>
+                <div class="cheat-row" id="adm-mod-ban"><span>Ban Selected</span><button class="cheat-btn-sm" style="background:#333;">BAN</button></div>
+                <div class="cheat-row" id="adm-godmode">
+                    <div class="cheat-checkbox"></div><span>Godmode (Inf Health)</span>
+                </div>
+                <div style="margin-top:20px; font-size:10px; color:#555; text-align:center;">
+                    Logged in as Jayden_111
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ===================== INVENTORY OVERLAY (E) ===================== -->
+<div id="inventory-overlay">
+    <div id="inv-window">
+        <div id="inv-title-bar">
+            <span id="inv-title">INVENTORY</span>
+            <span id="inv-close-hint">[ E ] Close</span>
+        </div>
+        <div id="inv-top">
+            <div id="inv-player-panel"><canvas id="inv-player-canvas" width="130" height="210"></canvas></div>
+            <div id="inv-equip-panel">
+                <div class="inv-section-label">EQUIPPED</div>
+                <div class="inv-equip-row">
+                    <div class="inv-equip-slot" id="inv-weapon-equip">
+                        <div class="equip-icon">🔫</div>
+                        <div class="equip-info">
+                            <div class="equip-name" id="inv-weapon-label">—</div>
+                            <div class="equip-sub" id="inv-ammo-val">—</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inv-equip-row">
+                    <div class="inv-equip-slot" id="inv-armor-equip">
+                        <div class="equip-icon">🛡️</div>
+                        <div class="equip-info">
+                            <div class="equip-name" id="inv-armor-label">No Armor</div>
+                            <div class="equip-sub" id="inv-armor-dur">
+                                <div style="display:flex; flex-direction:column; gap:2px; margin-top:2px;">
+                                    <div style="width:100%; height:4px; background:#222;"><div id="inv-armor-dur-bar" style="width:0%; height:100%; background:#22c55e;"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inv-equip-row">
+                    <div class="inv-equip-slot" id="inv-helmet-equip">
+                        <div class="equip-icon">🪖</div>
+                        <div class="equip-info">
+                            <div class="equip-name" id="inv-helmet-label">No Helmet</div>
+                            <div class="equip-sub" id="inv-helmet-dur">
+                                <div style="display:flex; flex-direction:column; gap:2px; margin-top:2px;">
+                                    <div style="width:100%; height:4px; background:#222;"><div id="inv-helmet-dur-bar" style="width:0%; height:100%; background:#22c55e;"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inv-equip-row">
+                    <div class="inv-equip-slot" id="inv-backpack-equip">
+                        <div class="equip-icon">🎒</div>
+                        <div class="equip-info">
+                            <div class="equip-name" id="inv-backpack-label">Standard Backpack</div>
+                            <div class="equip-sub" id="inv-backpack-sub">Capacity: 9 slots</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="inv-stats-box">
+                    <div class="inv-stat-row"><span class="inv-stat-lbl">HEALTH</span><span id="inv-hp-val">100/100</span></div>
+                    <div class="inv-stat-row"><span class="inv-stat-lbl">WAVE</span><span id="inv-wave-val">1</span></div>
+                    <div class="inv-stat-row"><span class="inv-stat-lbl">RELOAD SPEED</span><span id="inv-reload-stat-val">1.0x</span></div>
+                    <div class="inv-stat-row"><span class="inv-stat-lbl">COINS</span><span id="inv-coins-val">$0</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="inv-section-label">STORAGE</div>
+        <div id="inv-storage" class="inv-grid inv-grid-3x9"></div>
+        <div class="inv-section-label">HOTBAR — WEAPONS</div>
+        <div id="inv-hotbar" class="inv-grid inv-hotbar-row"></div>
+    </div>
+</div>
+
+
+<!-- ===================== HOST PANEL (MULTIPLAYER) ===================== -->
+<div id="host-panel">
+    <div class="host-header">
+        <span class="host-badge">HOST</span>
+        <span class="host-title">SERVER MANAGEMENT</span>
+    </div>
+    <div class="host-info-row">
+        <span class="host-info-lbl">JOIN CODE:</span>
+        <span id="host-join-code" class="host-code">XXXXXX</span>
+    </div>
+    <div class="host-info-row">
+        <span class="host-info-lbl">SERVER IP:</span>
+        <span id="host-ip-info" class="host-ip">0.0.0.0</span>
+    </div>
+    <div class="host-section-label">CONNECTED PLAYERS</div>
+    <div id="host-player-list">
+        <div class="host-player-row"><span>Player (Host)</span><span class="ping-good">1ms</span></div>
+    </div>
+    <div class="host-section-label">CONTROLS</div>
+    <button id="host-spectate-btn" class="host-btn">CAM OVERVIEW</button>
+    <button id="host-reset-btn" class="host-btn" style="color:#ffaa00;">RESTART MATCH</button>
+    <button id="host-close-btn" class="host-btn" style="color:#ff4444;">CLOSE WORLD</button>
+</div>
+
+<!-- ===================== CLIENT PANEL (MULTIPLAYER) ===================== -->
+<div id="client-hub" style="display:none;">
+    <div class="host-header" style="background:var(--c-blue);">
+        <span class="host-badge" style="background:#fff;color:var(--c-blue);">CLIENT</span>
+        <span class="host-title">CONNECTION HUB</span>
+    </div>
+    <div class="host-info-row">
+        <span class="host-info-lbl">CONNECTED TO:</span>
+        <span id="client-room-code" class="host-code">XXXXXX</span>
+    </div>
+    <div class="host-info-row">
+        <span class="host-info-lbl">SERVER STATUS:</span>
+        <span class="host-ip" style="color:#22c55e;">ENCRYPTED (LOCAL)</span>
+    </div>
+    <div class="host-section-label">MEMBERS</div>
+    <div class="host-player-row"><span>Player (Local)</span><span class="ping-good">5ms</span></div>
+    <div class="host-section-label">CONTROLS</div>
+    <button id="client-leave-btn" class="host-btn" style="color:#ff4444;margin-top:10px;">LEAVE WORLD</button>
+</div>
+
+<div id="inv-context-menu" style="display:none; position:absolute; background:var(--bg-panel); border:1px solid #333; z-index:1000; flex-direction:column; font-family:var(--font-mono); font-size:12px; box-shadow: 2px 2px 10px rgba(0,0,0,0.8); padding:5px;">
+    <button id="ctx-btn-use" class="admin-btn" style="width:100px; margin-bottom:5px;">Equip/Use</button>
+    <button id="ctx-btn-drop" class="admin-btn" style="width:100px; color:#ff4444; border-color:#ff4444;">Drop</button>
+</div>
+
+<!-- ===================== PAUSE MENU ===================== -->
+<div id="pause-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(8px); z-index:5000; align-items:center; justify-content:center; flex-direction:column; gap:0;">
+    <div id="pause-menu" style="background:rgba(12,12,22,0.96); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:40px 52px; display:flex; flex-direction:column; align-items:center; gap:14px; min-width:320px; box-shadow:0 20px 80px rgba(0,0,0,0.9);">
+        <div style="font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:0.3em; color:#e54028; margin-bottom:6px; text-transform:uppercase;">PAUSED</div>
+        <div style="font-family:'Rajdhani',sans-serif; font-size:28px; font-weight:800; color:#fff; margin-bottom:18px; letter-spacing:0.05em;">WARZONE</div>
+        <button id="pause-resume-btn" style="width:100%; padding:14px; background:linear-gradient(135deg,#e54028,#f97316); border:none; border-radius:8px; color:#fff; font-family:'Share Tech Mono',monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer; transition:all 0.15s; text-transform:uppercase;">▶  Resume</button>
+        <button id="pause-settings-btn" style="width:100%; padding:14px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:8px; color:#ccc; font-family:'Share Tech Mono',monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer; transition:all 0.15s; text-transform:uppercase;">⚙  Settings</button>
+        <button id="pause-stats-btn" style="width:100%; padding:14px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:8px; color:#ccc; font-family:'Share Tech Mono',monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer; transition:all 0.15s; text-transform:uppercase;">📊  Stats</button>
+        <button id="pause-quit-btn" style="width:100%; padding:14px; background:rgba(220,38,38,0.12); border:1px solid rgba(220,38,38,0.3); border-radius:8px; color:#f87171; font-family:'Share Tech Mono',monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer; transition:all 0.15s; text-transform:uppercase;">✕  Quit Game</button>
+    </div>
+
+    <!-- Stats Panel (hidden by default) -->
+    <div id="pause-stats-panel" style="display:none; background:rgba(12,12,22,0.96); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:32px 40px; min-width:320px; box-shadow:0 20px 80px rgba(0,0,0,0.9); margin-top:12px;">
+        <div style="font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:0.25em; color:#888; text-transform:uppercase; margin-bottom:20px;">📊 PLAYER STATS</div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-family:'Share Tech Mono',monospace; font-size:12px; color:#aaa; letter-spacing:0.1em; text-transform:uppercase;">Highest Wave</span>
+                <span id="stat-highest-wave" style="font-family:'Share Tech Mono',monospace; font-size:14px; color:#fff; font-weight:700;">1</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-family:'Share Tech Mono',monospace; font-size:12px; color:#aaa; letter-spacing:0.1em; text-transform:uppercase;">Zombies Killed</span>
+                <span id="stat-zombies-killed" style="font-family:'Share Tech Mono',monospace; font-size:14px; color:#fff; font-weight:700;">0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-family:'Share Tech Mono',monospace; font-size:12px; color:#aaa; letter-spacing:0.1em; text-transform:uppercase;">Times Died</span>
+                <span id="stat-times-died" style="font-family:'Share Tech Mono',monospace; font-size:14px; color:#fff; font-weight:700;">0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-family:'Share Tech Mono',monospace; font-size:12px; color:#aaa; letter-spacing:0.1em; text-transform:uppercase;">Total Coin</span>
+                <span id="stat-total-coin" style="font-family:'Share Tech Mono',monospace; font-size:14px; color:#22c55e; font-weight:700;">$0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-family:'Share Tech Mono',monospace; font-size:12px; color:#aaa; letter-spacing:0.1em; text-transform:uppercase;">Playtime</span>
+                <span id="stat-playtime" style="font-family:'Share Tech Mono',monospace; font-size:14px; color:#fff; font-weight:700;">00:00:00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Panel (hidden by default) -->
+    <div id="pause-settings-panel" style="display:none; background:rgba(12,12,22,0.96); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:32px 40px; min-width:320px; box-shadow:0 20px 80px rgba(0,0,0,0.9); margin-top:12px;">
+        <div style="font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:0.25em; color:#888; text-transform:uppercase; margin-bottom:20px;">⚙ SETTINGS</div>
+        <div style="margin-bottom:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-family:'Share Tech Mono',monospace; font-size:11px; color:#aaa; letter-spacing:0.1em; text-transform:uppercase;">Render Distance</span>
+                <span id="render-dist-lbl" style="font-family:'Share Tech Mono',monospace; font-size:11px; color:#fff; font-weight:700;">Medium</span>
+            </div>
+            <input type="range" id="render-dist-slider" min="20" max="100" value="80" style="-webkit-appearance:none; width:100%; height:4px; background:linear-gradient(90deg,#e54028 var(--pct,80%),#222 var(--pct,80%)); outline:none; border-radius:2px; cursor:pointer;">
+        </div>
+        <div style="margin-bottom:8px; margin-top:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-family:'Share Tech Mono',monospace; font-size:11px; color:#aaa; letter-spacing:0.1em; text-transform:uppercase;">Mouse Sensitivity</span>
+                <span id="mouse-sens-lbl" style="font-family:'Share Tech Mono',monospace; font-size:11px; color:#fff; font-weight:700;">1.0x</span>
+            </div>
+            <input type="range" id="mouse-sens-slider" min="1" max="50" value="10" style="-webkit-appearance:none; width:100%; height:4px; background:linear-gradient(90deg,#e54028 var(--pct,20%),#222 var(--pct,20%)); outline:none; border-radius:2px; cursor:pointer;">
+        </div>
+        <div style="margin-bottom:8px; margin-top:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-family:'Share Tech Mono',monospace; font-size:11px; color:#aaa; letter-spacing:0.1em; text-transform:uppercase;">Graphics Quality</span>
+                <span id="graphics-quality-lbl" style="font-family:'Share Tech Mono',monospace; font-size:11px; color:#fff; font-weight:700;">Medium</span>
+            </div>
+            <input type="range" id="graphics-quality-slider" min="1" max="4" value="2" style="-webkit-appearance:none; width:100%; height:4px; background:linear-gradient(90deg,#e54028 var(--pct,33.3%),#222 var(--pct,33.3%)); outline:none; border-radius:2px; cursor:pointer;">
+        </div>
+        <div style="margin-top:6px; font-family:'Share Tech Mono',monospace; font-size:10px; color:#555; text-align:center;">Lower = better performance · Higher = detailed terrain walls</div>
+    </div>
+</div>
+
+<div id="use-item-overlay" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:9999;">
+    <svg width="60" height="60" style="transform: rotate(-90deg);">
+        <circle cx="30" cy="30" r="26" fill="transparent" stroke="rgba(0,0,0,0.5)" stroke-width="6"/>
+        <circle id="use-item-progress" cx="30" cy="30" r="26" fill="transparent" stroke="#22c55e" stroke-width="6" stroke-dasharray="163" stroke-dashoffset="163" style="transition: stroke-dashoffset 0.1s linear;"/>
+    </svg>
+    <div id="use-item-icon" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-size:24px;"></div>
+</div>
+
+<script src="anti-cheat.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

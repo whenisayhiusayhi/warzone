@@ -1,0 +1,46 @@
+{
+  "name": "neon-strike-launcher",
+  "version": "1.0.0",
+  "description": "Battle of Doom - Neon Strike Omega Standalone Launcher",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --inspect",
+    "dist": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.jayden.warzonelauncher",
+    "productName": "WARZONE LAUNCHER",
+    "publish": {
+      "provider": "github",
+      "owner": "whenissayhiusayhi",
+      "repo": "warzone"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "installerSidebar": "assets/installer_sidebar.png"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "assets/**/*"
+    ]
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.3"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "author": "Jayden_111",
+  "license": "MIT"
+}
