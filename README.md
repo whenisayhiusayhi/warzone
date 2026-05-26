@@ -31,24 +31,36 @@ This document compiles the exhaustive technical specifications, math progression
 | **AR15** | `rifle` | $0 | semi | 7.0 | 2.0x | 0.8x | 65 | 0.0030 | 0.021 | 4.0 | 20 | 500 | 2.5s | `.223 rem` | 1.00x |
 | **UZI** | `pistol` | $100 | auto | 4.0 | 1.5x | 0.7x | 35 | 0.0900 | 0.050 | 4.0 | 32 | 1200 | 1.8s | `9mm` | 1.00x |
 | **GLOCK 19** | `pistol` | $250 | semi | 6.0 | 1.9x | 0.8x | 45 | 0.0100 | 0.042 | 1.2 | 19 | 600 | 1.5s | `9mm` | 1.00x |
+| **GLOCK 18C** | `pistol` | $1,000 | auto | 6.0 | 1.9x | 0.8x | 45 | 0.0100 | 0.100 | 1.2 | 60 | 1000 | 4.0s | `9mm` | 1.00x |
 | **MP5** | `rifle` | $400 | auto | 6.0 | 2.2x | 0.7x | 45 | 0.0100 | 0.050 | 2.5 | 30 | 700 | 2.0s | `9mm` | 1.00x |
 | **REVOLVER** | `pistol` | $500 | semi | 10.0 | 2.5x | 0.8x | 50 | 0.0210 | 0.060 | 8.0 | 6 | 200 | 2.0s | `44 mag` | 1.00x |
-| **AK47** | `rifle` | $720 | auto | 15.0 | 2.2x | 0.8x | 60 | 0.0025 | 0.063 | 6.5 | 30 | 480 | 2.5s | `7.62x62 soviet` | 1.00x |
-| **SPAS-12** | `shotgun_tube` | $900 | auto | 4.0 | 1.3x | 1.0x | 45 | 0.0120 | 0.168 | 8.0 | 8 | 200 | 3.5s | `12gauge` (12 pellets) | 1.00x |
-| **M500** | `shotgun_tube` | $350 | pump | 5.0 | 1.3x | 0.8x | 50 | 0.0150 | 0.168 | 9.5 | 8 | 50 | 4.0s | `12gauge` (12 pellets) | 1.00x |
 | **M4A1** | `rifle` | $1,200 | auto | 11.0 | 2.0x | 0.8x | 65 | 0.0020 | 0.035 | 6.0 | 30 | 650 | 2.2s | `.223 rem` | 1.00x |
 | **M249** | `lmg` | $1,500 | auto | 10.0 | 2.0x | 0.8x | 65 | 0.0030 | 0.045 | 7.5 | 150 | 800 | 6.0s | `.223 rem` | 0.85x |
-| **R700** | `bolt` | $1,000 | bolt | 32.0 | 3.5x | 1.0x | 80 | 0.0010 | 0.003 | 15.0 | 5 | 50 | 3.5s | `.308 win` (Scoped) | 1.00x |
-| **M110K** | `rifle` | $2,200 | semi | 8.0 | 3.2x | 1.0x | 75 | 0.0010 | 0.012 | 8.0 | 15 | 620 | 2.8s | `.308 win` (Scoped) | 1.00x |
+| **AK47** | `rifle` | $720 | auto | 15.0 | 2.2x | 0.8x | 60 | 0.0025 | 0.063 | 6.5 | 30 | 480 | 2.5s | `7.62x62 soviet` | 1.00x |
+| **SPAS-12** | `shotgun_tube` | $900 | auto | 4.0 | 1.3x | 1.0x | 45 | 0.0120 | 0.168 | 8.0 | 8 | 200 | 3.5s | `12gauge` (12 pellets) | 1.00x |
+| **M500** | `shotgun_tube` | $350 | pump | 5.0 | 1.3x | 0.8x | 50 | 0.0150 | 0.168 | 9.5 | 8 | 50 | 4.0s | `12gauge` (10 pellets) | 1.00x |
+| **M110K** | `rifle` | $2,200 | semi | 8.0 | 3.2x | 1.0x | 75 | 0.0010 | 0.012 | 8.0 | 15 | 620 | 2.8s | `.308 win` | 1.00x |
 | **AS-VAL** | `rifle` | $5,000 | auto | 6.0 | 3.0x | 0.6x | 30 | 0.0250 | 0.012 | 3.5 | 30 | 900 | 2.4s | `9x39 subsonic` | 1.00x |
-| **M82A1** | `bolt` | $10,000 | semi | 35.0 | 4.0x | 1.0x | 150 | 0.0005 | 0.001 | 28.0 | 10 | 500 | 5.0s | `.50 bmg` (Bolt reloading) | 1.00x |
-| **SVD** | `rifle` | $3,000 | semi | 15.0 | 3.0x | 1.0x | 100 | 0.0050 | 0.015 | 9.5 | 10 | 620 | 2.8s | `7.62x54 mmr` (Scoped) | 1.00x |
-| **PKM** | `lmg` | Loot-Only | auto | 12.0 | 2.5x | 1.0x | 1000 | 0.0100 | 0.045 | 8.0 | 100 | 900 | 5.0s | `7.62x54 mmr` | 0.85x |
+| **R700** | `bolt` | $1,000 | bolt | 32.0 | 3.5x | 1.0x | 80 | 0.0010 | 0.003 | 15.0 | 5 | 50 | 3.5s | `.308 win` | 1.00x |
+| **M82A1** | `bolt` | $10,000 | semi | 35.0 | 4.0x | 1.0x | 150 | 0.0005 | 0.001 | 28.0 | 10 | 500 | 5.0s | `.50 bmg` | 1.00x |
+| **SVD** | `rifle` | $3,000 | semi | 15.0 | 3.0x | 1.0x | 100 | 0.0050 | 0.015 | 9.5 | 10 | 620 | 2.8s | `7.62x54 mmr` | 1.00x |
+| **PKM** | `lmg` | $99,999 | auto | 12.0 | 2.5x | 1.0x | 1000 | 0.0100 | 0.045 | 8.0 | 100 | 900 | 5.0s | `7.62x54 mmr` | 0.85x |
+| **SKS** | `clip` | $500 | semi | 12.0 | 3.0x | 0.7x | 60 | 0.0025 | 0.005 | 8.0 | 10 | 600 | 1.5s | `7.62x62 soviet` | 1.00x |
+| **SCAR-H** | `rifle` | $7,500 | auto | 20.0 | 2.0x | 1.0x | 75 | 0.0020 | 0.035 | 7.5 | 20 | 670 | 2.5s | `.308 win` | 0.95x |
+| **AWM** | `bolt` | $6,000 | semi | 40.0 | 4.5x | 1.0x | 150 | 0.0010 | 0.0005 | 35.0 | 10 | 30 | 3.5s | `.50 bmg` | 0.85x |
 
 > [!NOTE]
-> **Shotguns (SPAS-12, M500)** fire a tight cluster of **12 individual pellets** simultaneously. The base damage listed in the table is calculated *per pellet*. A full body hit at point-blank range deals:
-> *   `SPAS-12`: 4.0 * 12 = **48.0 Damage**
-> *   `M500`: 5.0 * 12 = **60.0 Damage**
+> **Shotguns (SPAS-12, M500)** fire a tight cluster of individual pellets simultaneously. The base damage listed in the table is calculated *per pellet*. A full body hit at point-blank range deals:
+> *   `SPAS-12` (12 pellets): 4.0 * 12 = **48.0 Damage**
+> *   `M500` (10 pellets): 5.0 * 10 = **50.0 Damage**
+
+> [!TIP]
+> **Ammunition Penetration Multipliers (Armor Mitigation Bypass):**
+> High-caliber rounds bypass a portion of the target's armor or helmet mitigation using a penetration multiplier (`penMult`), reducing its protection percentage:
+> *   **1.0x pen** (Standard for `9mm`, `44 mag`, `.223 rem`, `9x39 subsonic`): Armor/helmet provides full base mitigation.
+> *   **0.75x pen** (Medium armor-piercing, `.308 win`): Decreases armor protection factor by 25% (e.g. 50% mitigation becomes 37.5%).
+> *   **0.65x pen** (Heavy combat rounds, `7.62x54 mmr`, `7.62x62 soviet`): Decreases armor protection factor by 35% (e.g. 90% mitigation becomes 58.5%).
+> *   **0.5x pen** (Anti-materiel, `.50 BMG`): Decreases armor protection factor by 50% (e.g. 90% mitigation becomes 45%).
 
 ---
 
@@ -97,7 +109,7 @@ graph TD
 | Variant Code | Base HP | Armor (T-Class) | Helmet (T-Class) | Armed Weapon | Movement Speed | Special Traits & Drops |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Tactical** (`tz`) | 20 | 50% Mit / 100 Dur | 40% Mit / 100 Dur | M4A1 (`dmg: 11.0`) | 1.4 | High strafe frequency, drops `$200` to `$500` coins |
-| **Russian** (`rz`) | 35 | 90% Mit / 200 Dur | 50% Mit / 150 Dur | AK47 (`dmg: 13.0`) | 1.2 | Explodes high-power bullets, drops `$200`-`$500` coins, **Red Floppy Disk** (100%), **SVD** (50%), **PKM** (25%) |
+| **Russian** (`rz`) | 35 | 90% Mit / 200 Dur | 50% Mit / 150 Dur | AK47 (`dmg: 13.0`) | 1.2 | Explodes high-power bullets, drops `$200`-`$500` coins + **Red Floppy Disk** (100%) |
 | **Juggernaut** (`jz`) | 100 | 90% Mit / 500 Dur | 75% Mit / 500 Dur | M249 (`dmg: 10.0`) | 0.8 | Regenerates 2% of max health per second if idle for 5s, drops **$2,500** + **Black Floppy Disk** (100%) |
 
 ---
@@ -126,6 +138,27 @@ graph TD
 
 ---
 
+### ⚙️ Armor Penetration & Mitigation Formula
+
+Damage received to mitigated regions (chest/head) scales according to active armor durability and bullet caliber:
+
+$$\text{Damage Received} = \text{Base Damage} \times (1 - \text{Mitigation} \times \text{penMult})$$
+
+| Caliber / Ammo Type | Armor Mitigation Multiplier (`penMult`) | Durability Damage Taken (`durDmg`) |
+| :--- | :--- | :--- |
+| `9mm` | 1.00 | 5 |
+| `44 mag` | 1.00 | 10 |
+| `.223 rem` | 1.00 | 30 |
+| `12gauge` | 1.00 | 10 (per pellet) |
+| `9x39 subsonic` | 1.00 | 15 |
+| `7.62x62 soviet` | 0.65 | 20 |
+| `7.62x54 mmr` | 0.65 | 25 |
+| `.308 win` | 0.75 | 50 |
+| `.50 bmg` | 0.50 | 100 |
+| **M67 Grenade (AOE)** | 0.50 (Flat) | 100 (Flat) |
+
+---
+
 ### 📦 Backpacks (Storage Scaling)
 
 Storage starts at a **9-slot grid** baseline. Purchasing backpacks expands slot availability:
@@ -137,20 +170,20 @@ Storage starts at a **9-slot grid** baseline. Purchasing backpacks expands slot 
 
 ### 🩹 Tactical Consumables & Ordinance
 
-*   **Medkit:** Cast Time: 5s | Heals 2 HP per tick. Max stack: 2.
+*   **Medkit:** Cast Time: 5s | Heals 2 HP per tick. Single stack.
 *   **Large Medkit:** Cast Time: 7s | Heals 5 HP per tick. Single stack.
-*   **Bandage:** Cost: $500 | Cast Time: 1s | Heals 1 HP per tick. Max stack: 8.
-*   **M67 Grenade:** Cost: $500 | Fuse Time: 3.0s | Damage: 120.0 | Blast Radius: 15.0m | Zombie Stun Time: 3.0s | Bypasses 50% armor, inflicts 100 armor/helmet durability damage. Max stack: 2.
+*   **Bandage:** Cost: $500 | Cast Time: 1s | Heals 1 HP per tick. Max stack: 4.
+*   **M67 Grenade:** Cost: $500 | Fuse Time: 3.0s | Damage: 50.0 | Blast Radius: 7.2m | Zombie Stun Time: 3.0s. Max stack: 2.
 *   **Ammo Purchases (Crow Merchant):**
-    *   `9mm`: $100 for 20 rounds (Max Stack: 100)
-    *   `44 mag`: $150 for 16 rounds (Max Stack: 75)
-    *   `.223 rem`: $200 for 30 rounds (Max Stack: 50)
-    *   `.308 win`: $250 for 10 rounds (Max Stack: 20)
-    *   `12gauge`: $100 for 10 rounds (Max Stack: 25)
-    *   `9x39 subsonic`: $500 for 30 rounds (Max Stack: 60)
-    *   `7.62x62 soviet`: $400 for 30 rounds (Max Stack: 50)
-    *   `7.62x54 mmr`: $600 for 30 rounds (Max Stack: 50)
-    *   `.50 bmg`: $1,000 for 10 rounds (Max Stack: 10)
+    *   `9mm`: $100 for 50 rounds (Max Stack: 300)
+    *   `44 mag`: $150 for 50 rounds (Max Stack: 100)
+    *   `.223 rem`: $200 for 100 rounds (Max Stack: 300)
+    *   `.308 win`: $250 for 75 rounds (Max Stack: 300)
+    *   `12gauge`: $100 for 30 rounds (Max Stack: 100)
+    *   `9x39 subsonic`: $500 for 50 rounds (Max Stack: 300)
+    *   `7.62x62 soviet`: $400 for 100 rounds (Max Stack: 300)
+    *   `.50 bmg`: $1,000 for 20 rounds (Max Stack: 100)
+    *   `7.62x54 mmr`: $600 for 50 rounds (Max Stack: 150)
 
 ---
 
@@ -162,12 +195,24 @@ Storage starts at a **9-slot grid** baseline. Purchasing backpacks expands slot 
 *   **Raycast Horizon Pitch Limits:** `-450px` to `+450px` (y-axis camera viewing lock).
 *   **Flinch Recovery:** Flinch shifts camera offset upwards (`STATE.flinchY`) and decays linearly back to zero over time.
     *   *Zombie Melee Flinch:* +150px
-    *   *Bullet Body Shot Flinch:* +250px
-    *   *Bullet Headshot Flinch:* +500px
+    *   *Bullet Body Shot Flinch:* +350px
+    *   *Bullet Headshot Flinch:* +650px
 
 ---
 
-## 🛡️ 5. anti-cheat System (WAC)
+## 🎯 5. Hitmarker Visual Indicators
+
+The HUD crosshair overlays high-precision hit markers upon landing shots on target entities:
+
+| Hit Type | Crosshair overlay shape | Visual Color | Duration |
+| :--- | :--- | :--- | :--- |
+| **Body Hit** | Standard diagonal cross (X) | White (`#ffffff`) | 220ms |
+| **Headshot** | Rotated cross (+) + center diamond | White (`#ffffff`) | 220ms |
+| **Kill Shot** | Large diagonal cross (X) | Red (`#ff2020`) | 380ms |
+
+---
+
+## 🛡️ 6. anti-cheat System (WAC)
 
 WAC operates an automated detection layer targeting memory, DOM mutations, and script injections:
 
@@ -186,7 +231,7 @@ WAC operates an automated detection layer targeting memory, DOM mutations, and s
 
 ---
 
-## ⚙️ 6. Cheat & Modifier Parameter Overrides
+## ⚙️ 7. Cheat & Modifier Parameter Overrides
 
 These global variables in the `ADMIN` namespace override standard game rules when cheat toggles are turned on:
 
@@ -200,4 +245,14 @@ These global variables in the `ADMIN` namespace override standard game rules whe
 *   `ADMIN.aimSmooth`: Interpolates crosshair turning angle (`1` is instant, higher is smoother).
 *   `ADMIN.hitboxExpansion`: Scales target hitbox dimensions (both vertical bounds and radius).
 *   `ADMIN.fovIncreaser`: Scales `STATE.fMult` to expand horizontal FOV angles.
-*   `ADMIN.infiniteAmmo`: Bypasses inventory reserve ammo consumption on weapon reloads, displaying an infinity symbol.
+
+---
+
+## 🌐 8. Multiplayer Connection (Direct P2P)
+
+The Warzone Launcher uses a direct Peer-to-Peer (P2P) network architecture powered by PeerJS:
+
+*   **Signaling Channel:** Uses public WebRTC STUN/TURN servers to exchange connection endpoints between peers.
+*   **Room Matching:** Generates a unique, random 6-character room matching code (prefixed with `bod-` in memory) to link clients.
+*   **Host Relaying Mechanics:** The player hosting the match acts as the central network hub. The host relays client movements, shots, hits, and coordinates directly to all other connected peers.
+*   **Performance:** Direct client-to-client connection minimizes latency and eliminates intermediate server forwarding overhead.
