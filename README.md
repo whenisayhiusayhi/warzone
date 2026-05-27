@@ -17,7 +17,6 @@
 | G | Hold Grenade |
 | F | Interact (Shop/Doors) |
 | N | Cycle Spectate Target (when Spectate is ON) |
-
 # 📋 BATTLE OF DOOM — Comprehensive Game Data Spec Sheet
 
 This document compiles the exhaustive technical specifications, math progression formulas, weapon damage tables, defensive gear values, items storage rules, and administrative cheat modifications directly parsed from the **Warzone Launcher** (`game.js`) engine codebase.
@@ -40,14 +39,14 @@ This document compiles the exhaustive technical specifications, math progression
 | **SPAS-12** | `shotgun_tube` | $900 | auto | 4.0 | 1.3x | 1.0x | 45 | 0.0120 | 0.168 | 8.0 | 8 | 200 | 3.5s | `12gauge` (12 pellets) | 1.00x |
 | **M500** | `shotgun_tube` | $350 | pump | 5.0 | 1.3x | 0.8x | 50 | 0.0150 | 0.168 | 9.5 | 8 | 50 | 4.0s | `12gauge` (10 pellets) | 1.00x |
 | **M110K** | `rifle` | $2,200 | semi | 8.0 | 3.2x | 1.0x | 75 | 0.0010 | 0.012 | 8.0 | 15 | 620 | 2.8s | `.308 win` | 1.00x |
-| **AS-VAL** | `rifle` | $5,000 | auto | 6.0 | 3.0x | 0.6x | 30 | 0.0250 | 0.012 | 3.5 | 30 | 900 | 2.4s | `9x39 subsonic` | 1.00x |
+| **AS-VAL** | `rifle` | $5,000 | auto | 6.0 | 2.0x | 0.5x | 20 | 0.0450 | 0.012 | 3.5 | 30 | 900 | 2.4s | `9x39 subsonic` | 1.00x |
 | **R700** | `bolt` | $1,000 | bolt | 32.0 | 3.5x | 1.0x | 80 | 0.0010 | 0.003 | 15.0 | 5 | 50 | 3.5s | `.308 win` | 1.00x |
-| **M82A1** | `bolt` | $10,000 | semi | 35.0 | 4.0x | 1.0x | 150 | 0.0005 | 0.001 | 28.0 | 10 | 500 | 5.0s | `.50 bmg` | 1.00x |
+| **M82A1** | `bolt` | $10,000 | semi | 35.0 | 3.0x | 1.0x | 150 | 0.0005 | 0.001 | 28.0 | 10 | 500 | 5.0s | `.50 bmg` | 1.00x |
 | **SVD** | `rifle` | $3,000 | semi | 15.0 | 3.0x | 1.0x | 100 | 0.0050 | 0.015 | 9.5 | 10 | 620 | 2.8s | `7.62x54 mmr` | 1.00x |
-| **PKM** | `lmg` | $99,999 | auto | 12.0 | 2.5x | 1.0x | 1000 | 0.0100 | 0.045 | 8.0 | 100 | 900 | 5.0s | `7.62x54 mmr` | 0.85x |
+| **PKM** | `lmg` | $12,000* | auto | 12.0 | 2.5x | 1.0x | 100 | 0.0100 | 0.045 | 8.0 | 100 | 900 | 5.0s | `7.62x54 mmr` | 0.85x |
 | **SKS** | `clip` | $500 | semi | 12.0 | 3.0x | 0.7x | 60 | 0.0025 | 0.005 | 8.0 | 10 | 600 | 1.5s | `7.62x62 soviet` | 1.00x |
-| **SCAR-H** | `rifle` | $7,500 | auto | 20.0 | 2.0x | 1.0x | 75 | 0.0020 | 0.035 | 7.5 | 20 | 670 | 2.5s | `.308 win` | 0.95x |
-| **AWM** | `bolt` | $6,000 | semi | 40.0 | 4.5x | 1.0x | 150 | 0.0010 | 0.0005 | 35.0 | 10 | 30 | 3.5s | `.50 bmg` | 0.85x |
+| **SCAR-H** | `rifle` | $7,500 | auto | 16.0 | 2.0x | 1.0x | 75 | 0.0020 | 0.035 | 7.5 | 20 | 670 | 2.5s | `.308 win` | 0.95x |
+| **AWM** | `bolt` | $6,000 | semi | 38.0 | 4.0x | 1.0x | 150 | 0.0010 | 0.0005 | 35.0 | 10 | 30 | 3.5s | `.50 bmg` | 0.85x |
 
 > [!NOTE]
 > **Shotguns (SPAS-12, M500)** fire a tight cluster of individual pellets simultaneously. The base damage listed in the table is calculated *per pellet*. A full body hit at point-blank range deals:
@@ -57,10 +56,12 @@ This document compiles the exhaustive technical specifications, math progression
 > [!TIP]
 > **Ammunition Penetration Multipliers (Armor Mitigation Bypass):**
 > High-caliber rounds bypass a portion of the target's armor or helmet mitigation using a penetration multiplier (`penMult`), reducing its protection percentage:
-> *   **1.0x pen** (Standard for `9mm`, `44 mag`, `.223 rem`, `9x39 subsonic`): Armor/helmet provides full base mitigation.
-> *   **0.75x pen** (Medium armor-piercing, `.308 win`): Decreases armor protection factor by 25% (e.g. 50% mitigation becomes 37.5%).
-> *   **0.65x pen** (Heavy combat rounds, `7.62x54 mmr`, `7.62x62 soviet`): Decreases armor protection factor by 35% (e.g. 90% mitigation becomes 58.5%).
-> *   **0.5x pen** (Anti-materiel, `.50 BMG`): Decreases armor protection factor by 50% (e.g. 90% mitigation becomes 45%).
+> *   **1.0x pen** (Standard for `9mm`, `44 mag`, `12gauge`): Armor/helmet provides full base mitigation.
+> *   **0.9x pen** (Light AP, `.223 rem`): Decreases armor protection factor by 10% (e.g. 50% mitigation becomes 45%).
+> *   **0.75x pen** (Medium AP, `.308 win`, `7.62x62 soviet`): Decreases armor protection factor by 25% (e.g. 50% mitigation becomes 37.5%).
+> *   **0.65x pen** (Heavy AP, `7.62x54 mmr`): Decreases armor protection factor by 35% (e.g. 90% mitigation becomes 58.5%).
+> *   **0.5x pen** (Tactical subsonic AP, `9x39 subsonic`): Decreases armor protection factor by 50% (e.g. 90% mitigation becomes 45%).
+> *   **0.3x pen** (Heavy anti-materiel, `.50 BMG`): Decreases armor protection factor by 70% (e.g. 90% mitigation becomes 27%).
 
 ---
 
@@ -74,6 +75,7 @@ graph TD
     A --> E(Tactical Zombie 'tz')
     A --> F(Russian Zombie 'rz')
     A --> G(Juggernaut Zombie 'jz')
+    A --> J(Sniper Zombie 'snz')
     
     D -->|HP <= 25| H[Agro Mode: Speed 3.0]
     G -->|Idle 5s| I[Regen 2% HP/sec]
@@ -111,6 +113,7 @@ graph TD
 | **Tactical** (`tz`) | 20 | 50% Mit / 100 Dur | 40% Mit / 100 Dur | M4A1 (`dmg: 11.0`) | 1.4 | High strafe frequency, drops `$200` to `$500` coins |
 | **Russian** (`rz`) | 35 | 90% Mit / 200 Dur | 50% Mit / 150 Dur | AK47 (`dmg: 13.0`) | 1.2 | Explodes high-power bullets, drops `$200`-`$500` coins + **Red Floppy Disk** (100%) |
 | **Juggernaut** (`jz`) | 100 | 90% Mit / 500 Dur | 75% Mit / 500 Dur | M249 (`dmg: 10.0`) | 0.8 | Regenerates 2% of max health per second if idle for 5s, drops **$2,500** + **Black Floppy Disk** (100%) |
+| **Sniper** (`snz`) | 10 | N/A | N/A | R700 (`dmg: 32.0`) | 0.5 | 80% headshot rate, 33% accuracy, ghillie suit camouflage, drops `$200` to `$500` coins |
 
 ---
 
@@ -148,13 +151,13 @@ $$\text{Damage Received} = \text{Base Damage} \times (1 - \text{Mitigation} \tim
 | :--- | :--- | :--- |
 | `9mm` | 1.00 | 5 |
 | `44 mag` | 1.00 | 10 |
-| `.223 rem` | 1.00 | 30 |
+| `.223 rem` | 0.90 | 30 |
 | `12gauge` | 1.00 | 10 (per pellet) |
-| `9x39 subsonic` | 1.00 | 15 |
-| `7.62x62 soviet` | 0.65 | 20 |
+| `9x39 subsonic` | 0.50 | 35 |
+| `7.62x62 soviet` | 0.75 | 20 |
 | `7.62x54 mmr` | 0.65 | 25 |
 | `.308 win` | 0.75 | 50 |
-| `.50 bmg` | 0.50 | 100 |
+| `.50 bmg` | 0.30 | 100 |
 | **M67 Grenade (AOE)** | 0.50 (Flat) | 100 (Flat) |
 
 ---
@@ -256,3 +259,58 @@ The Warzone Launcher uses a direct Peer-to-Peer (P2P) network architecture power
 *   **Room Matching:** Generates a unique, random 6-character room matching code (prefixed with `bod-` in memory) to link clients.
 *   **Host Relaying Mechanics:** The player hosting the match acts as the central network hub. The host relays client movements, shots, hits, and coordinates directly to all other connected peers.
 *   **Performance:** Direct client-to-client connection minimizes latency and eliminates intermediate server forwarding overhead.
+
+# ⚔️ BATTLE OF DOOM — PvP Weapons & Combat Data Sheet
+
+This document compiles the PvP-specific ballistics, damage multipliers, and caliber mechanics parsed from the **Warzone Launcher** (`PVP_STATS` override layer).
+
+---
+
+## 🔫 1. PvP Weapon Combat Metrics
+
+In PvP Mode, weapon base damages and headshot multipliers are overridden by the `PVP_STATS` config block. Leg damage multipliers use the base weapon stats as a fallback. 
+
+| Weapon Name | Caliber | Base Dmg | HS Mult | Headshot Dmg | Leg Mult | Leg Damage | Armor Pen (`penMult`) | Durability Loss |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **AR15** | `.223 rem` | 22.0 | 2.0x | **44.0** | 0.8x | **17.6** | 0.90x | 30 |
+| **SCAR-H** | `.308 win` | 25.0 | 2.0x | **50.0** | 1.0x | **25.0** | 0.75x | 50 |
+| **AWM** | `.50 bmg` | 100.0 | 2.0x | **200.0** | 1.0x | **100.0** | 0.30x | 100 |
+| **UZI** | `9mm` | 14.0 | 1.5x | **21.0** | 0.7x | **9.8** | 1.00x | 5 |
+| **GLOCK 19** | `9mm` | 16.0 | 1.9x | **30.4** | 0.8x | **12.8** | 1.00x | 5 |
+| **GLOCK 18C** | `9mm` | 16.0 | 1.9x | **30.4** | 0.8x | **12.8** | 1.00x | 5 |
+| **MP5** | `9mm` | 15.0 | 2.2x | **33.0** | 0.7x | **10.5** | 1.00x | 5 |
+| **REVOLVER** | `44 mag` | 30.0 | 2.5x | **75.0** | 0.8x | **24.0** | 1.00x | 10 |
+| **AK47** | `7.62x62 soviet` | 25.0 | 2.2x | **55.0** | 0.8x | **20.0** | 0.75x | 20 |
+| **SPAS-12** | `12gauge` (12 pellets) | 6.0 | 1.3x | **7.8** (x12) | 1.0x | **6.0** (x12) | 1.00x | 10 (per pellet) |
+| **M500** | `12gauge` (10 pellets) | 8.0 | 1.3x | **10.4** (x10) | 0.8x | **6.4** (x10) | 1.00x | 10 (per pellet) |
+| **M110K** | `.308 win` | 25.0 | 4.0x | **100.0** | 1.0x | **25.0** | 0.75x | 50 |
+| **AS-VAL** | `9x39 subsonic` | 18.0 | 2.0x | **36.0** | 0.5x | **9.0** | 0.50x | 35 |
+| **R700** | `.308 win` | 30.0 | 4.0x | **120.0** | 1.0x | **30.0** | 0.75x | 50 |
+| **M82A1** | `.50 bmg` | 80.0 | 3.0x | **240.0** | 1.0x | **80.0** | 0.30x | 100 |
+| **SVD** | `7.62x54 mmr` | 30.0 | 5.0x | **150.0** | 1.0x | **30.0** | 0.65x | 25 |
+| **PKM** | `7.62x54 mmr` | 25.0 | 2.5x | **62.5** | 1.0x | **25.0** | 0.65x | 25 |
+| **SKS** | `7.62x62 soviet` | 12.0* | 3.0x* | **36.0** | 0.7x | **8.4** | 0.75x | 20 |
+
+*   *Note: SKS uses its default base weapon template stats as a fallback since it has no specific entry in `PVP_STATS`.*
+*   *Shotguns (SPAS-12, M500) damage values are listed **per pellet**.*
+
+---
+
+## 🛡️ 2. PvP Armor Protection & Absorption Calculations
+
+Armor absorption in PvP respects caliber-specific bypass rules. The active protection factor of helmets and vests scales directly based on the bullet caliber's `penMult`:
+
+$$\text{Actual Damage Received} = \text{PvP Incoming Damage} \times (1 - \text{Mitigation} \times \text{penMult})$$
+
+### Mitigation Reference Tables
+
+#### Vests (Chest Coverage)
+*   **Police Vest (T1):** 25% Base Mitigation $\rightarrow$ **Mitigation factor in combat:** $0.25 \times \text{penMult}$
+*   **Military Vest (T2):** 50% Base Mitigation $\rightarrow$ **Mitigation factor in combat:** $0.50 \times \text{penMult}$
+*   **Plate Carrier (T3):** 90% Base Mitigation $\rightarrow$ **Mitigation factor in combat:** $0.90 \times \text{penMult}$
+
+#### Helmets (Head Coverage)
+*   **Motorcycle Helmet (T1):** 25% Base Mitigation $\rightarrow$ **Mitigation factor in combat:** $0.25 \times \text{penMult}$
+*   **Police Helmet (T2):** 40% Base Mitigation $\rightarrow$ **Mitigation factor in combat:** $0.40 \times \text{penMult}$
+*   **Military Helmet (T3):** 50% Base Mitigation $\rightarrow$ **Mitigation factor in combat:** $0.50 \times \text{penMult}$
+*   **Altyn Helmet (T4):** 50% Base Mitigation / **75% with Visor Down** $\rightarrow$ **Mitigation factor in combat:** $0.50/0.75 \times \text{penMult}$
