@@ -314,3 +314,48 @@ $$\text{Actual Damage Received} = \text{PvP Incoming Damage} \times (1 - \text{M
 *   **Police Helmet (T2):** 40% Base Mitigation $\rightarrow$ **Mitigation factor in combat:** $0.40 \times \text{penMult}$
 *   **Military Helmet (T3):** 50% Base Mitigation $\rightarrow$ **Mitigation factor in combat:** $0.50 \times \text{penMult}$
 *   **Altyn Helmet (T4):** 50% Base Mitigation / **75% with Visor Down** $\rightarrow$ **Mitigation factor in combat:** $0.50/0.75 \times \text{penMult}$
+
+1. Caliber & Armor Penetration Updates
+9x39 subsonic (AS-VAL):
+Armor Bypass Buffed: Protection bypass factor increased (1.0x $\rightarrow$ 0.50x), meaning it now bypasses 50% of target vest/helmet armor mitigation.
+Durability Wear Increased: Durability damage dealt per hit increased (15 $\rightarrow$ 35).
+.223 rem (AR15, M4A1, M249):
+Armor Bypass Buffed: Protection bypass factor increased (1.0x $\rightarrow$ 0.90x), bypassing 10% of armor mitigation.
+7.62x62 soviet (AK47, SKS):
+Armor Bypass Nerfed: Protection bypass factor reduced (0.65x $\rightarrow$ 0.75x), bypassing 25% of armor mitigation (down from 35%).
+.50 bmg (AWM, M82A1):
+Armor Bypass Buffed: Protection bypass factor increased (0.50x $\rightarrow$ 0.30x), bypassing 70% of armor mitigation.
+2. Weapon Rebalancing (PvE & General Stats)
+AS-VAL:
+Headshot multiplier reduced to 2.0x (down from 3.0x).
+Leg damage multiplier reduced to 0.5x (down from 0.6x).
+Muzzle velocity (bullet speed) reduced to 20 m/s (down from 30 m/s).
+Gravity drop coefficient increased to 0.045 (up from 0.025).
+M82A1:
+Headshot multiplier reduced to 3.0x (down from 4.0x).
+PKM:
+Muzzle velocity (bullet speed) reduced to 100 m/s (down from 1000 m/s).
+SCAR-H:
+Base PvE damage reduced to 16.0 (down from 20.0).
+AWM:
+Base PvE damage reduced to 38.0 (down from 40.0).
+Headshot multiplier reduced to 4.0x (down from 4.5x).
+3. Shop & Purchasing Logic
+PKM Shop Integration:
+Previously, the PKM was drop-only (unpurchasable) in Survival mode.
+It is now buyable in the Survival Shop for $12,000 + 2x Red Floppy Disks.
+Note: In PvP mode, the PKM remains free ($0) and bypasses floppy constraints.
+4. Launcher & Installer Packager
+Version Update: Bumped application manifest version to 1.0.20.
+Compiled Standalone Executable: Rebuilt the Windows installer (dist/WARZONE LAUNCHER Setup 1.0.20.exe).
+Cleanup: Deleted all old setup versions (versions 1.0.10 through 1.0.19) to keep only version 1.0.20.
+5. Documentation
+
+DATA_SHEET.md
+ has been updated with the new weapon numbers and armor penetration multipliers.
+
+UPDATE_DATA_SHEET.md
+ has been created to log these specific version 1.0.20 changes.
+
+PVP_DATA_SHEET.md
+ has been created as a dedicated sheet for PvP damage values, including PvP body/head/leg damage and armor bypass mechanics.
